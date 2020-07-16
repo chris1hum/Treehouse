@@ -1,9 +1,24 @@
 <?php
 include 'list.php';
 
-foreach ($list as $key => $item) {
-  echo $key . ' = ' . $item['title'] . "<br />\n";
+$field = 'priority';
+$status = false;
+$filter = array();
+foreach ($list as $originalkey => $item) {
+  if ($status === 'all' || $item['complete'] == $status) {
+    if (isset($field) && isset($item[$field])) {
+      $filter[$originalkey] = $item[$field];
+    } else {
+    $filter[$originalkey] = $item['priority']+12;
+    }
+  }
 }
+asort($filter);
+//echo '<pre>';
+//var_dump($filter);
+//var_dump($status, boolval('all'), $status === 'all');
+//var_dump($filter, $list);
+//echo '</pre>';
 
 echo '<table>';
 echo '<tr>';
@@ -12,19 +27,19 @@ echo '<th>Priority</th>';
 echo '<th>Due Date</th>';
 echo '<th>Complete</th>';
 echo '</tr>';
-foreach ($list as $item) {
-  echo '<tr>';
-  echo '<td>' . $item['title'] . "</td>\n";
-  echo '<td>' . $item['priority'] . "</td>\n";
-  echo '<td>' . $item['due'] . "</td>\n";
-  echo '<td>';
-  if($item['complete']) {
+foreach ($filter as $id => $value) {
+    echo '<tr>';
+    echo '<td>' . $list[$id]['title'] . "</td>\n";
+    echo '<td>' . $list[$id]['priority'] . "</td>\n";
+    echo '<td>' . $list[$id]['due'] . "</td>\n";
+    echo '<td>';
+    if($list[$id]['complete']) {
      echo 'Yes';
-  } else {
+    } else {
       echo 'No';
-  }
+    }
     echo "</td>\n";
-  echo '</tr>';
+    echo '</tr>';
 }
 echo '</table>';
 
